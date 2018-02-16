@@ -18,14 +18,9 @@ type Job struct {
 }
 
 type Jobs struct {
-	Jobs []Job
+	Jobbs []Job
 }
 
-// // type QueryResult struct {
-// // 	Title string
-// // 	Job   []*job
-// // }
-//
 func main() {
 	app := cli.NewApp()
 	app.Name = "indeed"
@@ -47,59 +42,49 @@ func main() {
 		number := c.Int("number")
 		keyword := c.String("word")
 		url := buildURL(keyword)
-		// jobs := []Job{}
 
 		goQuery(url, number)
 	}
 	app.Run(os.Args)
 }
 
-// (QueryResult, error)
+func (j *Jobs) Add(item Job) []Job {
+	j.Jobbs = append(j.Jobbs, item)
+	return j.Jobbs
+}
 
-// func main() {
-// 	var keyword = flag.String("key", "engineer", "keyword")
-// 	url := buildURL(*keyword)
-// 	goQuery(url, 10)
-// }
 func goQuery(url string, num int) {
 	doc, err := goquery.NewDocument(url)
 	if err != nil {
 		log.Fatal(err)
 	}
-	// counter, _ := strconv.Atoi(num)
-	// count := 0
-	// for count < counter {
-	doc.Find("tr").Each(func(i int, s *goquery.Selection) {
-		// For each item found, get the band and title
-		title := s.Find("a").Text()
-		location := s.Find("td").Text()
+	counter := num
+	count := 0
+	for count < counter {
+		doc.Find("tr").Each(func(i int, s *goquery.Selection) {
 
-		location = strings.Join(strings.Fields(location), " ")
+			title := s.Find("a").Text()
+			location := s.Find("td").Text()
 
-		jobby := &Job{
-			Title:   title,
-			Summary: location,
-		}
-		color.Red("Job title %d: %s ", i, jobby.Title)
-		color.Yellow("Detail: %s \n", jobby.Summary)
+			location = strings.Join(strings.Fields(location), " ")
 
-		// title := s.Find("i").Text()
-		// fmt.Printf("Review %d: %s - %s\n", i, title)
-		// count++
-	})
-	// }
+			jobby := &Job{
+				Title:   title,
+				Summary: location,
+			}
+			// items := []Job{}
+			// Job := Jobs{items}
+			// a := Job.Add(*jobby)
+			// fmt.Printf("%v\n", a)
+			color.Red("Job title %d: %s ", i, jobby.Title)
+			color.Yellow("Detail: %s \n", jobby.Summary)
+
+			count++
+		})
+	}
 
 }
 
-//
-// func (j *Jobs) Graph() {
-// 	for i := range j.Jobs {
-// 		color.Red("Job title %d: %s ", i.Title, title)
-// 		color.Yellow("Job Location %d: %s \n", i, location)
-// 	}
-// }
-
 func buildURL(key1 string) string {
 	return fmt.Sprintf("http://www.expatengineer.net/?query=%s", url.QueryEscape(key1))
-
 }
